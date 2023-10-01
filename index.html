@@ -7,8 +7,13 @@
             href="https://unpkg.com/maplibre-gl@2.4.0/dist/maplibre-gl.css"
             rel="stylesheet" 
         >
+        <script src="https://github.com/mug-jp/maplibre-gl-opacity/tree/main/dist/maplibre-gl-opacity.js"></script>
+        <link 
+            href="https://github.com/mug-jp/maplibre-gl-opacity/tree/main/dist/maplibre-gl-opacity.css"
+            rel="stylesheet" 
+        >
     </head>
-    <div id="map" style="height: 80vh"></div>
+    <div id="map" style="height: 90vh"></div>
     <script>
         window.console.log('test');
         const map = new maplibregl.Map({
@@ -34,6 +39,61 @@
                         tileSize: 256,
                         attribution:'<a href="https://disaportal.gsi.go.jp/hazardmap/copyright/opendata.html">ハザードマップポータルサイト</a>',
                     },
+                    hazard_hightide: {
+                        type: 'raster',
+                        tiles: [
+                        'https://disaportaldata.gsi.go.jp/raster/03_hightide_l2_shinsuishin_data/{z}/{x}/{y}.png',
+                        ],
+                        minzoom: 2,
+                        maxzoom: 17,
+                        tileSize: 256,
+                        attribution: 
+                        '<a href="https://disaportal.gsi.go.jp/hazardmap/copyright/opendata.html">ハザードマップポータルサイト</a>',
+                    },
+                    hazard_tsunami: {
+                        type: 'raster',
+                        tiles: [
+                        'https://disaportaldata.gsi.go.jp/raster/04_tsunami_newlegend_data/{z}/{x}/{y}.png',
+                        ],
+                        minzoom: 2,
+                        maxzoom: 17,
+                        tileSize: 256,
+                        attribution: 
+                        '<a href="https://disaportal.gsi.go.jp/hazardmap/copyright/opendata.html">ハザードマップポータルサイト</a>',
+                    },
+                    hazard_doseki: {
+                        type: 'raster',
+                        tiles: [
+                        'https://disaportaldata.gsi.go.jp/raster/05_dosekiryukeikaikuiki/{z}/{x}/{y}.png',
+                        ],
+                        minzoom: 2,
+                        maxzoom: 17,
+                        tileSize: 256,
+                        attribution: 
+                        '<a href="https://disaportal.gsi.go.jp/hazardmap/copyright/opendata.html">ハザードマップポータルサイト</a>',
+                    },
+                    hazard_kyukeisha: {
+                        type: 'raster',
+                        tiles: [
+                        'https://disaportaldata.gsi.go.jp/raster/05_kyukeishakeikaikuiki/{z}/{x}/{y}.png',
+                        ],
+                        minzoom: 2,
+                        maxzoom: 17,
+                        tileSize: 256,
+                        attribution: 
+                        '<a href="https://disaportal.gsi.go.jp/hazardmap/copyright/opendata.html">ハザードマップポータルサイト</a>',
+                    },
+                    hazard_jisuberi: {
+                        type: 'raster',
+                        tiles: [
+                        'https://disaportaldata.gsi.go.jp/raster/05_jisuberikeikaikuiki/{z}/{x}/{y}.png',
+                        ],
+                        minzoom: 2,
+                        maxzoom: 17,
+                        tileSize: 256,
+                        attribution: 
+                        '<a href="https://disaportal.gsi.go.jp/hazardmap/copyright/opendata.html">ハザードマップポータルサイト</a>',
+                    },
                     sightseeingPlace: { 
                         type: 'geojson',
                         data: './sightseeingPlace.geojson', //茨城県、東京、千葉、埼玉、神奈川県のみの観光資源データ
@@ -53,6 +113,42 @@
                         source: 'hazard_flood',
                         type: 'raster',
                         paint: { 'raster-opacity': 0.7 },
+                        // layout: { visibility: 'none' }, // レイヤーの表示はOpacityControlで操作するためデフォルトでは非表示
+                    },
+                    {
+                        id: 'hazard_hightide_layer',
+                        source: 'hazard_hightide',
+                        type: 'raster',
+                        paint: { 'raster-opacity': 0.7 },
+                        layout: { visibility: 'none' }, 
+                    },
+                    {
+                        id: 'hazard_tsunami_layer',
+                        source: 'hazard_tsunami',
+                        type: 'raster',
+                        paint: { 'raster-opacity': 0.7 },
+                        layout: { visibility: 'none' }, 
+                    },
+                    {
+                        id: 'hazard_doseki_layer',
+                        source: 'hazard_doseki',
+                        type: 'raster',
+                        paint: { 'raster-opacity': 0.7 },
+                        layout: { visibility: 'none' }, 
+                    },
+                    {
+                        id: 'hazard_kyukeisha_layer',
+                        source: 'hazard_kyukeisha',
+                        type: 'raster',
+                        paint: { 'raster-opacity': 0.7 },
+                        layout: { visibility: 'none' }, 
+                    },
+                    {
+                        id: 'hazard_jisuberi_layer',
+                        source: 'hazard_jisuberi',
+                        type: 'raster',
+                        paint: { 'raster-opacity': 0.7 },
+                        layout: { visibility: 'none' }, 
                     },
                     {
                         id: 'sightseeingPlace-layer',
@@ -102,5 +198,22 @@
                 ],
             },
         });
+
+        // マップの初期ロード完了時に発火するイベントを定義
+        map.on('load', () => {
+            // 背景地図・重ねるタイル地図のコントロール
+            const opacity = new OpacityControl({
+                baseLayers: {
+                'hazard_flood_layer': '洪水浸水想定区域', // layer-id: レイヤー名
+                'hazard_hightide_layer': '高潮浸水想定区域',
+                'hazard_tsunami_layer': '津波浸水想定区域',
+                'hazard_doseki_layer': '土石流警戒区域',
+                'hazard_kyukeisha_layer': '急傾斜警戒区域',
+                'hazard_jisuberi_layer': '地滑り警戒区域',
+                },
+            });
+            map.addControl(opacity, 'top-left'); // 第二引数で場所を指定
+        });
+      
     </script>
 </html>
