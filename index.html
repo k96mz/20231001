@@ -11,5 +11,30 @@
     <div id="map" style="height: 80vh"></div>
     <script>
         window.console.log('test');
+        const map = new maplibregl.Map({
+            container: 'map',
+            center: [139.8, 35.7],
+            zoom: 5,
+            style: {
+                version: 8,
+                sources: {
+                    gsi: {
+                        type: 'raster',
+                        tiles:['https://cyberjapandata.gsi.go.jp/xyz/pale/{z}/{x}/{y}.png'],
+                        tileSize: 256,
+                        maxzoom: 18,
+                        attribution: <a href="https://maps.gsi.go.jp/development/ichiran.html">地理院タイル</a>,
+                    },
+                },
+                layers: [
+                    {
+                        id: 'gsi-layer',
+                        source: 'gsi',
+                        type: 'raster',
+                        minzoom: 5,
+                    },
+                ],
+            },
+        });
     </script>
 </html>
