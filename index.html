@@ -25,6 +25,12 @@
                         maxzoom: 18,
                         attribution: '<a href="https://maps.gsi.go.jp/development/ichiran.html">地理院タイル</a>',
                     },
+                    landPrice: {
+                        type: 'geojson',
+                        data: './L02-23.geojson',
+                        maxzoom: 18,
+                        attribution: '<a href="https://nlftp.mlit.go.jp/ksj/gml/datalist/KsjTmplt-L02-v3_1.html">国土数値情報 - 都道府県地価調査データ</a>',
+                    },
                 },
                 layers: [
                     {
@@ -32,6 +38,24 @@
                         source: 'gsi',
                         type: 'raster',
                         minzoom: 5,
+                    },
+                    {
+                        id: 'landPrice-layer',
+                        source: 'landPrice',
+                        type: 'circle',
+                        minzoom: 5,
+                        paint: {
+                            'circle-color': [
+                                'interpolate',
+                                ['linear'],
+                                ['get', 'L02_001'], // 学校のレイヤーとは構成が違うので、うまく読み込まれていない模様
+                                '000', '#f00', // 住宅地は赤
+                                '003', '#0f0', // 住宅見込地は緑
+                                '005', '#0f0', // 商業地は緑
+                                '009', '#00f', // 工業地は青
+                                '020', 'orange', // 林地はオレンジ
+                            ],
+                        },
                     },
                 ],
             },
