@@ -26,6 +26,14 @@
                         maxzoom: 18,
                         attribution: '<a href="https://maps.gsi.go.jp/development/ichiran.html">地理院タイル</a>',
                     },
+                    hazard_flood: {
+                        type: 'raster',
+                        tiles: ['https://disaportaldata.gsi.go.jp/raster/01_flood_l2_shinsuishin_data/{z}/{x}/{y}.png'],
+                        minzoom: 2,
+                        maxzoom: 17,
+                        tileSize: 256,
+                        attribution:'<a href="https://disaportal.gsi.go.jp/hazardmap/copyright/opendata.html">ハザードマップポータルサイト</a>',
+                    },
                     sightseeingPlace: { 
                         type: 'geojson',
                         data: './sightseeingPlace.geojson', //茨城県、東京、千葉、埼玉、神奈川県のみの観光資源データ
@@ -39,6 +47,12 @@
                         source: 'gsi',
                         type: 'raster',
                         minzoom: 5,
+                    },
+                    {
+                        id: 'hazard_flood_layer',
+                        source: 'hazard_flood',
+                        type: 'raster',
+                        paint: { 'raster-opacity': 0.7 },
                     },
                     {
                         id: 'sightseeingPlace-layer',
